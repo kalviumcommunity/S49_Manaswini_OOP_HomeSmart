@@ -120,29 +120,6 @@ public:
     }
 };
 
-class User{
-private:
-    string nameOfDeviceOwned;
-    string companyofTheDevice;
-    
-
-public:
-    User(){
-
-    }
-
-    User(string nameOfDeviceOwned, string companyofTheDevice ){
-        this -> nameOfDeviceOwned = nameOfDeviceOwned;
-        this -> companyofTheDevice = companyofTheDevice;
-    }
-
-    
-    void display() {
-        cout<<"Name of the device: "<<nameOfDeviceOwned<<endl;
-        cout<<"Company of that device: "<<companyofTheDevice<<endl;
-    }
-
-};
 
 
 int main() {
