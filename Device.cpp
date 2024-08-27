@@ -121,6 +121,30 @@ public:
 };
 
 
+class User{
+private:
+    string nameOfDeviceOwned;
+    string companyofTheDevice;
+    
+
+public:
+    User(){
+
+    }
+
+    User(string nameOfDeviceOwned, string companyofTheDevice ){
+        this -> nameOfDeviceOwned = nameOfDeviceOwned;
+        this -> companyofTheDevice = companyofTheDevice;
+    }
+
+    
+    void display() {
+        cout<<"Name of the device: "<<nameOfDeviceOwned<<endl;
+        cout<<"Company of that device: "<<companyofTheDevice<<endl;
+    }
+
+};
+
 
 int main() {
     string deviceType, name_of_device, company, colour;
@@ -171,15 +195,16 @@ int main() {
             } else {
                 cout << "Turn on the device to continue." << endl;
             }
-
+            //showing the details of the termostat
             mythermostat.showDetails();
 
         } else {
             cout << "Invalid device type." << endl;
         }
 
-    }  else {
+    } else {
         string keepTrack;
+        //using array of objects
         cout << "Do you want to keep a track of all the devices? y(yes) or n(no) " << endl;
         cin >> keepTrack;
         if(keepTrack == "y"){
@@ -192,7 +217,6 @@ int main() {
                 cin >> name_of_device >> company_of_device;
                 devices[i] = User(name_of_device, company_of_device);
             }
-        
             for(int i = 0; i < 5; i++){
                 devices[i].display();
             }
