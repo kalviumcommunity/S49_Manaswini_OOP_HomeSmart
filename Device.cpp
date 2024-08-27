@@ -211,7 +211,7 @@ int main() {
             for(int i = 0; i < 5; i++){
                 string name_of_device;
                 string company_of_device;
-                cout << "Enter the details (first the device name and then the company)" << i+1 << endl;
+                cout << "Enter the details (order: first the device name and then the company) " << i+1 << endl;
                 cin >> name_of_device >> company_of_device;
                 devices[i] = User(name_of_device, company_of_device);
             }
