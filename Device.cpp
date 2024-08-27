@@ -120,6 +120,30 @@ public:
     }
 };
 
+class User{
+private:
+    string nameOfDeviceOwned;
+    string companyofTheDevice;
+    
+
+public:
+    User(){
+
+    }
+
+    User(string nameOfDeviceOwned, string companyofTheDevice ){
+        this -> nameOfDeviceOwned = nameOfDeviceOwned;
+        this -> companyofTheDevice = companyofTheDevice;
+    }
+
+    
+    void display() {
+        cout<<"Name of the device: "<<nameOfDeviceOwned<<endl;
+        cout<<"Company of that device: "<<companyofTheDevice<<endl;
+    }
+
+};
+
 
 int main() {
     string deviceType, name_of_device, company, colour;
@@ -177,8 +201,28 @@ int main() {
             cout << "Invalid device type." << endl;
         }
 
-    } else {
-        cout << "See you next time :)" << endl;
+    }  else {
+        string keepTrack;
+        cout << "Do you want to keep a track of all the devices? y(yes) or n(no) " << endl;
+        cin >> keepTrack;
+        if(keepTrack == "y"){
+           User devices[5];
+    
+            for(int i = 0; i < 5; i++){
+                string name_of_device;
+                string company_of_device;
+                cout << "Enter the details (order: first the device name and then the company) " << i+1 << endl;
+                cin >> name_of_device >> company_of_device;
+                devices[i] = User(name_of_device, company_of_device);
+            }
+        
+            for(int i = 0; i < 5; i++){
+                devices[i].display();
+            }
+ 
+        } else {
+            cout << "see you next time :)" << endl;
+        }
     }
 
     return 0;
