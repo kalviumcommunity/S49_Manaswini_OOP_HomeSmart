@@ -94,39 +94,91 @@ public:
 
 };
 
+class Thermostat : public Device {
+private:
+    float temperature;
+public:
+    // Constructor
+    Thermostat(string deviceName, string typeOfConnectivity, int versionYear) : Device(deviceName, typeOfConnectivity, versionYear) {
+        this->temperature = 22.0; // Default temperature in Celsius
+    }
+
+    // Set temperature function
+    void setTemperature(float temp) {
+        if (isOn) {
+            temperature = temp;
+            cout << "Temperature is set to " << temperature << "°C" << endl;
+        } else {
+            cout << "Turn this device on before making modifications" << endl;
+        }
+    }
+
+    // Show details inherited from Device class
+    void showDetails() override {
+        Device::showDetails();
+        cout << "Temperature: " << temperature << "°C" << endl;
+    }
+};
+
 
 int main() {
-    string name_of_device, company, colour;
+    string deviceType, name_of_device, company, colour;
     bool turn_on;
     int brightness, version_year;
+    float temperature;
     string confirmation;
 
     cout << "Do you want to connect a device? y(yes) or n(no)" << endl;
     cin >> confirmation;
 
-    if(confirmation == "y"){  
-        cout<<"Name of the device, name of the company, and version year you want to connect "<<endl;
-        cin>>name_of_device>>company>>version_year;
-        
-        SmartBulb mybulb(name_of_device, company, version_year);
+    if (confirmation == "y") {
+        cout << "Which device do you want to connect? (SmartBulb/Thermostat)" << endl;
+        cin >> deviceType;
 
-        cout<<"Do you want to turn on the device? y(yes) or n(no)" << endl;
-        string confirmation_turnon;
-        cin >> confirmation_turnon; 
-        if(confirmation_turnon == "y"){
-            mybulb.switchOnOff(true);
-            cout<<"Set colour and brightness(1 - 10)"<<endl;
-            cin>>colour >> brightness;
-            mybulb.setColour(colour);
-            mybulb.setBrightness(brightness);
-        } else{
-            cout<<"turn this device to continue"<<endl;
+        cout << "Enter the device name, company, and version year:" << endl;
+        cin >> name_of_device >> company >> version_year;
+
+        if (deviceType == "SmartBulb") {
+            SmartBulb mybulb(name_of_device, company, version_year);
+
+            cout << "Do you want to turn on the device? y(yes) or n(no)" << endl;
+            string confirmation_turnon;
+            cin >> confirmation_turnon;
+            if (confirmation_turnon == "y") {
+                mybulb.switchOnOff(true);
+                cout << "Set colour and brightness (1 - 10):" << endl;
+                cin >> colour >> brightness;
+                mybulb.setColour(colour);
+                mybulb.setBrightness(brightness);
+            } else {
+                cout << "Turn on the device to continue." << endl;
+            }
+
+            mybulb.showDetails();
+
+        } else if (deviceType == "Thermostat") {
+            Thermostat mythermostat(name_of_device, company, version_year);
+
+            cout << "Do you want to turn on the device? y(yes) or n(no)" << endl;
+            string confirmation_turnon;
+            cin >> confirmation_turnon;
+            if (confirmation_turnon == "y") {
+                mythermostat.switchOnOff(true);
+                cout << "Set temperature (°C):" << endl;
+                cin >> temperature;
+                mythermostat.setTemperature(temperature);
+            } else {
+                cout << "Turn on the device to continue." << endl;
+            }
+
+            mythermostat.showDetails();
+
+        } else {
+            cout << "Invalid device type." << endl;
         }
-        
-        
 
     } else {
-        cout<<"See you next time :)"<<endl;
+        cout << "See you next time :)" << endl;
     }
 
     return 0;
