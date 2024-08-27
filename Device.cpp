@@ -99,8 +99,7 @@ private:
     float temperature;
 public:
     // Constructor
-    Thermostat(string deviceName, string typeOfConnectivity, int versionYear) 
-        : Device(deviceName, typeOfConnectivity, versionYear) {
+    Thermostat(string deviceName, string typeOfConnectivity, int versionYear) : Device(deviceName, typeOfConnectivity, versionYear) {
         this->temperature = 22.0; // Default temperature in Celsius
     }
 
