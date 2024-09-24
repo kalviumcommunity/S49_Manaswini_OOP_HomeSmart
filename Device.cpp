@@ -18,39 +18,49 @@ public:
         this->typeOfConnectivity = typeOfConnectivity;
         this->versionYear = versionYear;
         this->isOn = false;
+        incrementTotalDevices();  // Increment total devices count when new device is created
     }
+
     void switchOnOff(bool turnOn) {
         if (isOn != turnOn) {
             isOn = turnOn;
         }
     }
+
     virtual void showDetails() {
         cout << "Device Name: " << deviceName << endl;
         cout << "Type of Connectivity: " << typeOfConnectivity << endl;
         cout << "Version Year: " << versionYear << endl;
         cout << "Status: " << (isOn ? "On" : "Off") << endl;
     }
-    static int getTotalDevices() { // Static member function to get total devices
+
+    static void incrementTotalDevices() {  // Static member function
+        totalDevices++;
+    }
+
+    static int getTotalDevices() {  // Static member function to get total devices
         return totalDevices;
     }
 };
-int Device::totalDevices = 0; // Initialize static member
+int Device::totalDevices = 0;  // Initialize static member
 
 class SmartBulb : public Device {
 private:
     string colour;
     int brightness;
-    static int totalSmartBulbs; // Static variable for SmartBulb count
+    static int totalSmartBulbs;  // Static variable for SmartBulb count
 public:
     SmartBulb(string deviceName, string typeOfConnectivity, int versionYear)
         : Device(deviceName, typeOfConnectivity, versionYear) {
         this->brightness = 5;
         this->colour = "white";
-        totalSmartBulbs++; // Increment SmartBulb count
+        totalSmartBulbs++;  // Increment SmartBulb count
     }
+
     ~SmartBulb() {
-        totalSmartBulbs--; // Decrement SmartBulb count
+        totalSmartBulbs--;  // Decrement SmartBulb count
     }
+
     void setColour(string colour) {
         if (isOn) {
             this->colour = colour;
@@ -59,6 +69,7 @@ public:
             cout << "Turn this device on before making modifications" << endl;
         }
     }
+
     void setBrightness(int b) {
         if (isOn) {
             if (1 > b || b > 10) {
@@ -71,18 +82,19 @@ public:
             cout << "Turn this device on before making modifications" << endl;
         }
     }
+
     void showDetails() override {
         Device::showDetails();
         cout << "Colour: " << colour << endl;
         cout << "Brightness: " << brightness << endl;
     }
-    static int getTotalSmartBulbs() { // Static member function for SmartBulb count
+
+    static int getTotalSmartBulbs() {  // Static member function for SmartBulb count
         return totalSmartBulbs;
     }
 };
 
-int SmartBulb::totalSmartBulbs = 0; // Initialize static member
-
+int SmartBulb::totalSmartBulbs = 0;  // Initialize static member
 
 class Thermostat : public Device {
 private:
@@ -92,6 +104,7 @@ public:
         : Device(deviceName, typeOfConnectivity, versionYear) {
         this->temperature = 22.0;
     }
+
     void setTemperature(float temp) {
         if (isOn) {
             temperature = temp;
@@ -100,25 +113,10 @@ public:
             cout << "Turn this device on before making modifications" << endl;
         }
     }
+
     void showDetails() override {
         Device::showDetails();
         cout << "Temperature: " << temperature << "°C" << endl;
-    }
-};
-
-class User {
-private:
-    string nameOfDeviceOwned;
-    string companyofTheDevice;
-public:
-    User() {}
-    User(string nameOfDeviceOwned, string companyofTheDevice) {
-        this->nameOfDeviceOwned = nameOfDeviceOwned;
-        this->companyofTheDevice = companyofTheDevice;
-    }
-    void display() {
-        cout << "Name of the device: " << nameOfDeviceOwned << endl;
-        cout << "Company of that device: " << companyofTheDevice << endl;
     }
 };
 
@@ -184,30 +182,8 @@ int main() {
 
         delete device;  // Freeing the allocated memory
 
-    } else {
-        string keepTrack;
-        cout << "Do you want to keep a track of all the devices? y(yes) or n(no) " << endl;
-        cin >> keepTrack;
-        if (keepTrack == "y") {
-            User* devices = new User[5];  // Using dynamic allocation for array
-
-            for (int i = 0; i < 5; i++) {
-                string name_of_device;
-                string company_of_device;
-                cout << "Enter the details (order: first the device name and then the company) " << i + 1 << endl;
-                cin >> name_of_device >> company_of_device;
-                devices[i] = User(name_of_device, company_of_device);
-            }
-            for (int i = 0; i < 5; i++) {
-                devices[i].display();
-            }
-
-            delete[] devices;  // Freeing the allocated memory
-        } else {
-            cout << "See you next time :)" << endl;
-        }
     }
-    
+
     cout << "Total devices created: " << Device::getTotalDevices() << endl;
     cout << "Total smart bulbs created: " << SmartBulb::getTotalSmartBulbs() << endl;
 
