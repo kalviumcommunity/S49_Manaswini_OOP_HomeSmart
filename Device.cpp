@@ -11,6 +11,7 @@ protected:
     string typeOfConnectivity;
     int versionYear;
     bool isOn;
+    static int totalDevices; // Static variable to keep track of total devices
 public:
     Device(string deviceName, string typeOfConnectivity, int versionYear) {
         this->deviceName = deviceName;
@@ -18,7 +19,6 @@ public:
         this->versionYear = versionYear;
         this->isOn = false;
     }
-    virtual ~Device() {} // Virtual destructor for proper cleanup
     void switchOnOff(bool turnOn) {
         if (isOn != turnOn) {
             isOn = turnOn;
@@ -30,17 +30,26 @@ public:
         cout << "Version Year: " << versionYear << endl;
         cout << "Status: " << (isOn ? "On" : "Off") << endl;
     }
+    static int getTotalDevices() { // Static member function to get total devices
+        return totalDevices;
+    }
 };
+int Device::totalDevices = 0; // Initialize static member
 
 class SmartBulb : public Device {
 private:
     string colour;
     int brightness;
+    static int totalSmartBulbs; // Static variable for SmartBulb count
 public:
     SmartBulb(string deviceName, string typeOfConnectivity, int versionYear)
         : Device(deviceName, typeOfConnectivity, versionYear) {
         this->brightness = 5;
         this->colour = "white";
+        totalSmartBulbs++; // Increment SmartBulb count
+    }
+    ~SmartBulb() {
+        totalSmartBulbs--; // Decrement SmartBulb count
     }
     void setColour(string colour) {
         if (isOn) {
@@ -67,7 +76,13 @@ public:
         cout << "Colour: " << colour << endl;
         cout << "Brightness: " << brightness << endl;
     }
+    static int getTotalSmartBulbs() { // Static member function for SmartBulb count
+        return totalSmartBulbs;
+    }
 };
+
+int SmartBulb::totalSmartBulbs = 0; // Initialize static member
+
 
 class Thermostat : public Device {
 private:
@@ -161,6 +176,7 @@ int main() {
             }
 
             thermostat->showDetails();
+            
 
         } else {
             cout << "Invalid device type." << endl;
@@ -191,6 +207,9 @@ int main() {
             cout << "See you next time :)" << endl;
         }
     }
+    
+    cout << "Total devices created: " << Device::getTotalDevices() << endl;
+    cout << "Total smart bulbs created: " << SmartBulb::getTotalSmartBulbs() << endl;
 
     return 0;
 }
