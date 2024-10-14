@@ -21,6 +21,28 @@ public:
         incrementTotalDevices();  // Increment total devices count when new device is created
     }
 
+    //getters
+    string getDeviceName() const { 
+        return deviceName; 
+    }
+    string getTypeOfConnectivity() const { 
+        return typeOfConnectivity; 
+    }
+    int getVersionYear() const { 
+        return versionYear; 
+    }
+
+    //setters
+    void setDeviceName(string name) { 
+        deviceName = name; 
+    }
+    void setTypeOfConnectivity(string connectivity) { 
+        typeOfConnectivity = connectivity; 
+    }
+    void setVersionYear(int year) { 
+        versionYear = year; 
+    }
+
     void switchOnOff(bool turnOn) {
         if (isOn != turnOn) {
             isOn = turnOn;
@@ -57,6 +79,14 @@ public:
         totalSmartBulbs++;  // Increment SmartBulb count
     }
 
+    //Accessors
+    string getColour() const { 
+        return colour; 
+    }
+    int getBrightness() const { 
+        return brightness; 
+    }
+
     ~SmartBulb() {
         totalSmartBulbs--;  // Decrement SmartBulb count
     }
@@ -72,7 +102,7 @@ public:
 
     void setBrightness(int b) {
         if (isOn) {
-            if (1 > b || b > 10) {
+            if (1 >= b || b >= 10) {
                 cout << "Give a valid input between 1 to 10" << endl;
             } else {
                 brightness = b;
@@ -141,7 +171,6 @@ int main() {
         if (deviceType == "SmartBulb") {
             device = new SmartBulb(name_of_device, company, version_year);
             SmartBulb* smartBulb = dynamic_cast<SmartBulb*>(device);
-
             cout << "Do you want to turn on the device? y(yes) or n(no)" << endl;
             string confirmation_turnon;
             cin >> confirmation_turnon;
