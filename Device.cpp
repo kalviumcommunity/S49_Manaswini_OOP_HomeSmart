@@ -143,7 +143,6 @@ int main() {
         if (deviceType == "SmartBulb") {
             device = new SmartBulb(name_of_device, company, version_year);
             SmartBulb* smartBulb = dynamic_cast<SmartBulb*>(device);
-
             cout << "Do you want to turn on the device? y(yes) or n(no)" << endl;
             string confirmation_turnon;
             cin >> confirmation_turnon;
