@@ -5,214 +5,222 @@
 
 using namespace std;
 
-class Device {
+class Device
+{
+
 protected:
     string deviceName;
     string typeOfConnectivity;
     int versionYear;
     bool isOn;
-    static int totalDevices; // Static variable to keep track of total devices
+    // Static variable to keep track of total devices
+    static int totalDevices;
+
+protected:
+    void incrementTotalDevices()
+    {
+        totalDevices++;
+    }
+
 public:
-    Device(string deviceName, string typeOfConnectivity, int versionYear) {
+    Device(string deviceName, string typeOfConnectivity, int versionYear)
+    {
         this->deviceName = deviceName;
         this->typeOfConnectivity = typeOfConnectivity;
         this->versionYear = versionYear;
         this->isOn = false;
-        incrementTotalDevices();  // Increment total devices count when new device is created
+        incrementTotalDevices();
     }
 
-    //getters
-    string getDeviceName() const { 
-        return deviceName; 
-    }
-    string getTypeOfConnectivity() const { 
-        return typeOfConnectivity; 
-    }
-    int getVersionYear() const { 
-        return versionYear; 
-    }
+    virtual ~Device() {}
 
-    //setters
-    void setDeviceName(string name) { 
-        deviceName = name; 
-    }
-    void setTypeOfConnectivity(string connectivity) { 
-        typeOfConnectivity = connectivity; 
-    }
-    void setVersionYear(int year) { 
-        versionYear = year; 
-    }
+    // Pure virtual functions
+    virtual void switchOnOff(bool turnOn) = 0;
+    virtual void showDetails() const = 0;
+    virtual void configure() = 0;
 
-    void switchOnOff(bool turnOn) {
-        if (isOn != turnOn) {
-            isOn = turnOn;
-        }
-    }
-
-    virtual void showDetails() {
-        cout << "Device Name: " << deviceName << endl;
-        cout << "Type of Connectivity: " << typeOfConnectivity << endl;
-        cout << "Version Year: " << versionYear << endl;
-        cout << "Status: " << (isOn ? "On" : "Off") << endl;
-    }
-
-    static void incrementTotalDevices() {  // Static member function
-        totalDevices++;
-    }
-
-    static int getTotalDevices() {  // Static member function to get total devices
+    // Common functionality
+    static int getTotalDevices()
+    {
         return totalDevices;
     }
 };
-int Device::totalDevices = 0;  // Initialize static member
 
-class SmartBulb : public Device {
+int Device::totalDevices = 0; // Initialize static member
+
+// Derived class SmartBulb
+class SmartBulb : public Device
+{
 private:
     string colour;
     int brightness;
-    static int totalSmartBulbs;  // Static variable for SmartBulb count
+    static int totalSmartBulbs; // Static variable for SmartBulb count
 public:
     SmartBulb(string deviceName, string typeOfConnectivity, int versionYear)
-        : Device(deviceName, typeOfConnectivity, versionYear) {
+        : Device(deviceName, typeOfConnectivity, versionYear)
+    {
         this->brightness = 5;
         this->colour = "white";
-        totalSmartBulbs++;  // Increment SmartBulb count
+        totalSmartBulbs++; // Increment SmartBulb count
     }
 
-    //Accessors
-    string getColour() const { 
-        return colour; 
+    // Accessors
+    string getColour() const
+    {
+        return colour;
     }
-    int getBrightness() const { 
-        return brightness; 
-    }
-
-    ~SmartBulb() {
-        totalSmartBulbs--;  // Decrement SmartBulb count
+    int getBrightness() const
+    {
+        return brightness;
     }
 
-    void setColour(string colour) {
-        if (isOn) {
-            this->colour = colour;
-            cout << "The colour of this device is set to " << colour << endl;
-        } else {
-            cout << "Turn this device on before making modifications" << endl;
-        }
+    ~SmartBulb()
+    {
+        totalSmartBulbs--; // Decrement SmartBulb count
     }
 
-    void setBrightness(int b) {
-        if (isOn) {
-            if (1 >= b || b >= 10) {
-                cout << "Give a valid input between 1 to 10" << endl;
-            } else {
-                brightness = b;
-                cout << "The brightness has been set to " << b << endl;
+    void switchOnOff(bool turnOn) override
+    {
+        isOn = turnOn;
+        cout << deviceName << " is now " << (isOn ? "on" : "off") << endl;
+    }
+
+    void showDetails() const override
+    {
+        cout << "Device Name: " << deviceName << endl
+             << "Type: SmartBulb" << endl
+             << "Type of Connectivity: " << typeOfConnectivity << endl
+             << "Version Year: " << versionYear << endl
+             << "Status: " << (isOn ? "On" : "Off") << endl
+             << "Colour: " << colour << endl
+             << "Brightness: " << brightness << endl;
+    }
+
+    void configure() override
+    {
+        if (isOn)
+        {
+            cout << "Set colour: ";
+            cin >> colour;
+            cout << "Set brightness (1-10): ";
+            cin >> brightness;
+            if (1 <= brightness && brightness <= 10)
+            {
+                cout << "Colour set to " << colour << " and brightness set to " << brightness << endl;
             }
-        } else {
-            cout << "Turn this device on before making modifications" << endl;
+            else
+            {
+                cout << "Invalid brightness. Setting to default (5)." << endl;
+                brightness = 5;
+            }
+        }
+        else
+        {
+            cout << "Turn on the device before configuring." << endl;
         }
     }
 
-    void showDetails() override {
-        Device::showDetails();
-        cout << "Colour: " << colour << endl;
-        cout << "Brightness: " << brightness << endl;
-    }
-
-    static int getTotalSmartBulbs() {  // Static member function for SmartBulb count
+    static int getTotalSmartBulbs()
+    { // Static member function for SmartBulb count
         return totalSmartBulbs;
     }
 };
 
-int SmartBulb::totalSmartBulbs = 0;  // Initialize static member
+int SmartBulb::totalSmartBulbs = 0; // Initialize static member
 
-class Thermostat : public Device {
+// Derived class Thermostat
+class Thermostat : public Device
+{
 private:
     float temperature;
+
 public:
     Thermostat(string deviceName, string typeOfConnectivity, int versionYear)
-        : Device(deviceName, typeOfConnectivity, versionYear) {
+        : Device(deviceName, typeOfConnectivity, versionYear)
+    {
         this->temperature = 22.0;
     }
 
-    void setTemperature(float temp) {
-        if (isOn) {
-            temperature = temp;
-            cout << "Temperature is set to " << temperature << "°C" << endl;
-        } else {
-            cout << "Turn this device on before making modifications" << endl;
-        }
+    void switchOnOff(bool turnOn) override
+    {
+        isOn = turnOn;
+        cout << deviceName << " is now " << (isOn ? "on" : "off") << endl;
     }
 
-    void showDetails() override {
-        Device::showDetails();
-        cout << "Temperature: " << temperature << "°C" << endl;
+    void showDetails() const override
+    {
+        cout << "Device Name: " << deviceName << endl
+             << "Type: Thermostat" << endl
+             << "Type of Connectivity: " << typeOfConnectivity << endl
+             << "Version Year: " << versionYear << endl
+             << "Status: " << (isOn ? "On" : "Off") << endl
+             << "Temperature: " << temperature << "°C" << endl;
+    }
+
+    void configure() override
+    {
+        if (isOn)
+        {
+            cout << "Set temperature (°C): ";
+            cin >> temperature;
+            cout << "Temperature set to " << temperature << "°C" << endl;
+        }
+        else
+        {
+            cout << "Turn on the device before configuring." << endl;
+        }
     }
 };
 
-int main() {
-    string deviceType, name_of_device, company, colour;
-    int brightness, version_year;
-    float temperature;
+int main()
+{
+    string deviceType, name_of_device, company;
+    int version_year;
     string confirmation;
 
     cout << "Do you want to connect a device? y(yes) or n(no)" << endl;
     cin >> confirmation;
 
-    if (confirmation == "y") {
-        cout << "Which device do you want to connect? (SmartBulb/Thermostat)" << endl;
+    if (confirmation == "y")
+    {
+        cout << "Which device do you want to connect? (SmartBulb->(s)/Thermostat->(t))" << endl;
         cin >> deviceType;
 
         cout << "Enter the device name, company, and version year:" << endl;
         cin >> name_of_device >> company >> version_year;
 
-        Device* device = nullptr;  // Using dynamic allocation
+        Device *device = nullptr; // Using dynamic allocation
 
-        if (deviceType == "SmartBulb") {
+        if (deviceType == "s")
+        {
             device = new SmartBulb(name_of_device, company, version_year);
-            SmartBulb* smartBulb = dynamic_cast<SmartBulb*>(device);
-            cout << "Do you want to turn on the device? y(yes) or n(no)" << endl;
-            string confirmation_turnon;
-            cin >> confirmation_turnon;
-            if (confirmation_turnon == "y") {
-                smartBulb->switchOnOff(true);
-                cout << "Set colour and brightness (1 - 10):" << endl;
-                cin >> colour >> brightness;
-                smartBulb->setColour(colour);
-                smartBulb->setBrightness(brightness);
-            } else {
-                cout << "Turn on the device to continue." << endl;
-            }
-
-            smartBulb->showDetails();
-
-        } else if (deviceType == "Thermostat") {
-            device = new Thermostat(name_of_device, company, version_year);
-            Thermostat* thermostat = dynamic_cast<Thermostat*>(device);
-
-            cout << "Do you want to turn on the device? y(yes) or n(no)" << endl;
-            string confirmation_turnon;
-            cin >> confirmation_turnon;
-            if (confirmation_turnon == "y") {
-                thermostat->switchOnOff(true);
-                cout << "Set temperature (°C):" << endl;
-                cin >> temperature;
-                thermostat->setTemperature(temperature);
-            } else {
-                cout << "Turn on the device to continue." << endl;
-            }
-
-            thermostat->showDetails();
-            
-
-        } else {
-            cout << "Invalid device type." << endl;
         }
 
-        delete device;  // Freeing the allocated memory
+        else if (deviceType == "t")
+        {
+            device = new Thermostat(name_of_device, company, version_year);
+        }
+        else
+        {
+            cout << "Invalid device type." << endl;
+            return 1;
+        }
+        cout << "Do you want to turn on the device? y(yes) or n(no)" << endl;
+        cin >> confirmation;
+        if (confirmation == "y")
+        {
+            device->switchOnOff(true);
+            device->configure();
+        }
+        else
+        {
+            cout << "Device remains off." << endl;
+        }
 
+        device->showDetails();
+
+        delete device; // Freeing the allocated memory
     }
-
     cout << "Total devices created: " << Device::getTotalDevices() << endl;
     cout << "Total smart bulbs created: " << SmartBulb::getTotalSmartBulbs() << endl;
 
