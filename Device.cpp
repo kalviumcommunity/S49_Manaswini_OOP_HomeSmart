@@ -23,6 +23,7 @@ protected:
     }
 
 public:
+    // constructor -1
     Device(string deviceName, string typeOfConnectivity, int versionYear)
     {
         this->deviceName = deviceName;
@@ -32,6 +33,7 @@ public:
         incrementTotalDevices();
     }
 
+    // Destructor 1
     virtual ~Device() {}
 
     // Pure virtual functions
@@ -56,6 +58,7 @@ private:
     int brightness;
     static int totalSmartBulbs; // Static variable for SmartBulb count
 public:
+    // Constructor 2
     SmartBulb(string deviceName, string typeOfConnectivity, int versionYear)
         : Device(deviceName, typeOfConnectivity, versionYear)
     {
@@ -73,7 +76,7 @@ public:
     {
         return brightness;
     }
-
+    // Destructor 2
     ~SmartBulb()
     {
         totalSmartBulbs--; // Decrement SmartBulb count
@@ -135,11 +138,15 @@ private:
     float temperature;
 
 public:
+    // Constructor 3
     Thermostat(string deviceName, string typeOfConnectivity, int versionYear)
         : Device(deviceName, typeOfConnectivity, versionYear)
     {
         this->temperature = 22.0;
     }
+
+    // Destructor 3
+    ~Thermostat() {}
 
     void switchOnOff(bool turnOn) override
     {
