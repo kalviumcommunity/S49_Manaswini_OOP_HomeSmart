@@ -166,10 +166,8 @@ private:
 public:
     // Constructor 2
     SmartBulb(string deviceName, string typeOfConnectivity, int versionYear)
-        : Device(deviceName, typeOfConnectivity, versionYear)
+        : Device(deviceName, typeOfConnectivity, versionYear), brightness(5), colour("white")
     {
-        this->brightness = 5;
-        this->colour = "white";
         totalSmartBulbs++; // Increment SmartBulb count
     }
 
@@ -246,10 +244,7 @@ private:
 public:
     // Constructor 3
     Thermostat(string deviceName, string typeOfConnectivity, int versionYear)
-        : Device(deviceName, typeOfConnectivity, versionYear)
-    {
-        this->temperature = 22.0;
-    }
+        : Device(deviceName, typeOfConnectivity, versionYear), temperature(22.0) {}
 
     // Destructor 3
     ~Thermostat() {}
