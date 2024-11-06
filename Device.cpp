@@ -50,6 +50,44 @@ public:
 
 int Device::totalDevices = 0; // Initialize static member
 
+// Derived class SmartWatch
+class SmartWatch : public Device
+{
+private:
+    int batteryLife;
+
+public:
+    // Constructor for SmartWatch
+    SmartWatch(string name, string connectivity, int year, int battery)
+        : Device(name, connectivity, year), batteryLife(battery) {}
+
+    // Function to show specific details
+    void showWatchDetails() const
+    {
+        showDetails();
+        cout << "Battery Life: " << batteryLife << " hours" << endl;
+    }
+};
+
+// Derived class SmartSpeaker
+class SmartSpeaker : public Device
+{
+private:
+    int volumeLevel;
+
+public:
+    // Constructor for SmartSpeaker
+    SmartSpeaker(string name, string connectivity, int year, int volume)
+        : Device(name, connectivity, year), volumeLevel(volume) {}
+
+    // Function to show specific details
+    void showSpeakerDetails() const
+    {
+        showDetails();
+        cout << "Volume Level: " << volumeLevel << endl;
+    }
+};
+
 // Derived class SmartBulb
 class SmartBulb : public Device
 {
