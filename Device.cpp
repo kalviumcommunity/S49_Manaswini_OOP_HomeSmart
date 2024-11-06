@@ -67,6 +67,36 @@ public:
         showDetails();
         cout << "Battery Life: " << batteryLife << " hours" << endl;
     }
+
+    void switchOnOff(bool turnOn) override
+    {
+        isOn = turnOn;
+        cout << deviceName << " is now " << (isOn ? "on" : "off") << endl;
+    }
+
+    void showDetails() const override
+    {
+        cout << "Device Name: " << deviceName << endl
+             << "Type: SmartWatch" << endl
+             << "Type of Connectivity: " << typeOfConnectivity << endl
+             << "Version Year: " << versionYear << endl
+             << "Status: " << (isOn ? "On" : "Off") << endl
+             << "Battery Life: " << batteryLife << " hours" << endl;
+    }
+
+    void configure() override
+    {
+        if (isOn)
+        {
+            cout << "Set battery life (hours): ";
+            cin >> batteryLife;
+            cout << "Battery life set to " << batteryLife << " hours" << endl;
+        }
+        else
+        {
+            cout << "Turn on the device before configuring." << endl;
+        }
+    }
 };
 
 // Derived class SmartSpeaker
@@ -85,6 +115,44 @@ public:
     {
         showDetails();
         cout << "Volume Level: " << volumeLevel << endl;
+    }
+
+    void switchOnOff(bool turnOn) override
+    {
+        isOn = turnOn;
+        cout << deviceName << " is now " << (isOn ? "on" : "off") << endl;
+    }
+
+    void showDetails() const override
+    {
+        cout << "Device Name: " << deviceName << endl
+             << "Type: SmartSpeaker" << endl
+             << "Type of Connectivity: " << typeOfConnectivity << endl
+             << "Version Year: " << versionYear << endl
+             << "Status: " << (isOn ? "On" : "Off") << endl
+             << "Volume Level: " << volumeLevel << endl;
+    }
+
+    void configure() override
+    {
+        if (isOn)
+        {
+            cout << "Set volume level (1-10): ";
+            cin >> volumeLevel;
+            if (1 <= volumeLevel && volumeLevel <= 10)
+            {
+                cout << "Volume level set to " << volumeLevel << endl;
+            }
+            else
+            {
+                cout << "Invalid volume level. Setting to default (5)." << endl;
+                volumeLevel = 5;
+            }
+        }
+        else
+        {
+            cout << "Turn on the device before configuring." << endl;
+        }
     }
 };
 
@@ -219,8 +287,8 @@ public:
 
 int main()
 {
-    string deviceType, name_of_device, company;
-    int version_year;
+    string name_of_device, connectivity;
+    int deviceType, version_year;
     string confirmation;
 
     cout << "Do you want to connect a device? y(yes) or n(no)" << endl;
@@ -228,22 +296,33 @@ int main()
 
     if (confirmation == "y")
     {
-        cout << "Which device do you want to connect? (SmartBulb->(s)/Thermostat->(t))" << endl;
+        cout << "Which device do you want to connect? (SmartWatch(1)/SmartSpeker(2)/SmartBulb->(3)/Thermostat->(4))" << endl;
         cin >> deviceType;
 
-        cout << "Enter the device name, company, and version year:" << endl;
-        cin >> name_of_device >> company >> version_year;
+        cout << "Enter the device name" << endl;
+        cin >> name_of_device;
+        cout << "Enter the type of connectivity" << endl;
+        cin >> connectivity;
+        cout << "Enter the version year" << endl;
+        cin >> version_year;
 
         Device *device = nullptr; // Using dynamic allocation
-
-        if (deviceType == "s")
+        if (deviceType == 1)
         {
-            device = new SmartBulb(name_of_device, company, version_year);
+            device = new SmartWatch(name_of_device, connectivity, version_year, 24);
+        }
+        else if (deviceType == 2)
+        {
+            device = new SmartSpeaker(name_of_device, connectivity, version_year, 5);
+        }
+        else if (deviceType == 3)
+        {
+            device = new SmartBulb(name_of_device, connectivity, version_year);
         }
 
-        else if (deviceType == "t")
+        else if (deviceType == 4)
         {
-            device = new Thermostat(name_of_device, company, version_year);
+            device = new Thermostat(name_of_device, connectivity, version_year);
         }
         else
         {
