@@ -4,7 +4,7 @@
 #include <iomanip>
 
 using namespace std;
-
+// Abstract class
 class Device
 {
 
@@ -36,7 +36,7 @@ public:
     // Destructor 1
     virtual ~Device() {}
 
-    // Pure virtual functions
+    // Pure virtual functions to be overridden by derived classes
     virtual void switchOnOff(bool turnOn) = 0;
     virtual void showDetails() const = 0;
     virtual void configure() = 0;
