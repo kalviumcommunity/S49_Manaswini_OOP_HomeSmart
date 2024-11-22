@@ -68,12 +68,14 @@ public:
         cout << "Battery Life: " << batteryLife << " hours" << endl;
     }
 
+    // Function overriding the pure virtual function
     void switchOnOff(bool turnOn) override
     {
         isOn = turnOn;
         cout << deviceName << " is now " << (isOn ? "on" : "off") << endl;
     }
 
+    // Function overriding the pure virtual function
     void showDetails() const override
     {
         cout << "Device Name: " << deviceName << endl
@@ -84,6 +86,7 @@ public:
              << "Battery Life: " << batteryLife << " hours" << endl;
     }
 
+    // Function overriding the pure virtual function
     void configure() override
     {
         if (isOn)
@@ -117,12 +120,14 @@ public:
         cout << "Volume Level: " << volumeLevel << endl;
     }
 
+    // Function overriding the pure virtual function
     void switchOnOff(bool turnOn) override
     {
         isOn = turnOn;
         cout << deviceName << " is now " << (isOn ? "on" : "off") << endl;
     }
 
+    // Function overriding the pure virtual function
     void showDetails() const override
     {
         cout << "Device Name: " << deviceName << endl
@@ -133,6 +138,7 @@ public:
              << "Volume Level: " << volumeLevel << endl;
     }
 
+    // Function overriding the pure virtual function
     void configure() override
     {
         if (isOn)
@@ -186,12 +192,14 @@ public:
         totalSmartBulbs--; // Decrement SmartBulb count
     }
 
+    // Function overriding the pure virtual function
     void switchOnOff(bool turnOn) override
     {
         isOn = turnOn;
         cout << deviceName << " is now " << (isOn ? "on" : "off") << endl;
     }
 
+    // Function overriding the pure virtual function
     void showDetails() const override
     {
         cout << "Device Name: " << deviceName << endl
@@ -203,6 +211,7 @@ public:
              << "Brightness: " << brightness << endl;
     }
 
+    // Function overriding the pure virtual function
     void configure() override
     {
         if (isOn)
@@ -249,12 +258,14 @@ public:
     // Destructor 3
     ~Thermostat() {}
 
+    // Function overriding the pure virtual function
     void switchOnOff(bool turnOn) override
     {
         isOn = turnOn;
         cout << deviceName << " is now " << (isOn ? "on" : "off") << endl;
     }
 
+    // Function overriding the pure virtual function
     void showDetails() const override
     {
         cout << "Device Name: " << deviceName << endl
@@ -265,6 +276,7 @@ public:
              << "Temperature: " << temperature << "°C" << endl;
     }
 
+    // Function overriding the pure virtual function
     void configure() override
     {
         if (isOn)
@@ -301,7 +313,8 @@ int main()
         cout << "Enter the version year" << endl;
         cin >> version_year;
 
-                Device *device = nullptr;
+        // Create a device object based on the user input [Runtime Polymorphism]
+        Device *device = nullptr;
         if (deviceType == 1)
         {
             device = new SmartWatch(name_of_device, connectivity, version_year, 24);
