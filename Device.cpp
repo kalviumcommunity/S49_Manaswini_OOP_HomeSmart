@@ -301,7 +301,7 @@ int main()
         cout << "Enter the version year" << endl;
         cin >> version_year;
 
-        Device *device = nullptr; // Using dynamic allocation
+                Device *device = nullptr;
         if (deviceType == 1)
         {
             device = new SmartWatch(name_of_device, connectivity, version_year, 24);
