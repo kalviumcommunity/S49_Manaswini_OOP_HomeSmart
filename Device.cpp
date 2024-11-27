@@ -4,6 +4,80 @@
 #include <iomanip>
 
 using namespace std;
+
+// Configuration Helper Class for SmartWatch
+class SmartWatchConfigHelper
+{
+public:
+    static void configureBattery(int &batteryLife)
+    {
+        cout << "Set battery life (hours): ";
+        cin >> batteryLife;
+        cout << "Battery life set to " << batteryLife << " hours" << endl;
+    }
+};
+
+// Configuration Helper Class for SmartSpeaker
+class SmartSpeakerConfigHelper
+{
+public:
+    static void configureVolume(int &volumeLevel)
+    {
+        cout << "Set volume level (1-10): ";
+        cin >> volumeLevel;
+        if (volumeLevel < 1 || volumeLevel > 10)
+        {
+            cout << "Invalid volume. Setting to default (5)." << endl;
+            volumeLevel = 5;
+        }
+    }
+};
+
+// Configuration Helper Class for SmartBulb
+class SmartBulbConfigHelper
+{
+public:
+    static void configureSettings(string &colour, int &brightness)
+    {
+        cout << "Set colour: ";
+        cin >> colour;
+        cout << "Set brightness (1-10): ";
+        cin >> brightness;
+        if (brightness < 1 || brightness > 10)
+        {
+            cout << "Invalid brightness. Setting to default (5)." << endl;
+            brightness = 5;
+        }
+    }
+};
+
+// Configuration Helper Class for Thermostat
+class ThermostatConfigHelper
+{
+public:
+    static void configureTemperature(float &temperature)
+    {
+        cout << "Set temperature (°C): ";
+        cin >> temperature;
+        cout << "Temperature set to " << temperature << "°C" << endl;
+    }
+};
+
+// Logging Helper Class
+class DeviceLogger
+{
+public:
+    static void logDeviceCreation(const string &deviceName)
+    {
+        cout << "Device created: " << deviceName << endl;
+    }
+
+    static void logDeviceStatus(const string &deviceName, bool isOn)
+    {
+        cout << deviceName << " is now " << (isOn ? "on" : "off") << endl;
+    }
+};
+
 // Abstract class
 class Device
 {
@@ -20,6 +94,7 @@ protected:
     void incrementTotalDevices()
     {
         totalDevices++;
+        DeviceLogger::logDeviceCreation(deviceName);
     }
 
 public:
@@ -61,13 +136,6 @@ public:
     SmartWatch(string name, string connectivity, int year, int battery)
         : Device(name, connectivity, year), batteryLife(battery) {}
 
-    // Function to show specific details
-    void showWatchDetails() const
-    {
-        showDetails();
-        cout << "Battery Life: " << batteryLife << " hours" << endl;
-    }
-
     // Function overriding the pure virtual function
     void switchOnOff(bool turnOn) override
     {
@@ -91,9 +159,7 @@ public:
     {
         if (isOn)
         {
-            cout << "Set battery life (hours): ";
-            cin >> batteryLife;
-            cout << "Battery life set to " << batteryLife << " hours" << endl;
+            SmartWatchConfigHelper::configureBattery(batteryLife);
         }
         else
         {
@@ -113,18 +179,11 @@ public:
     SmartSpeaker(string name, string connectivity, int year, int volume)
         : Device(name, connectivity, year), volumeLevel(volume) {}
 
-    // Function to show specific details
-    void showSpeakerDetails() const
-    {
-        showDetails();
-        cout << "Volume Level: " << volumeLevel << endl;
-    }
-
     // Function overriding the pure virtual function
     void switchOnOff(bool turnOn) override
     {
         isOn = turnOn;
-        cout << deviceName << " is now " << (isOn ? "on" : "off") << endl;
+        DeviceLogger::logDeviceStatus(deviceName, isOn);
     }
 
     // Function overriding the pure virtual function
@@ -143,17 +202,7 @@ public:
     {
         if (isOn)
         {
-            cout << "Set volume level (1-10): ";
-            cin >> volumeLevel;
-            if (1 <= volumeLevel && volumeLevel <= 10)
-            {
-                cout << "Volume level set to " << volumeLevel << endl;
-            }
-            else
-            {
-                cout << "Invalid volume level. Setting to default (5)." << endl;
-                volumeLevel = 5;
-            }
+            SmartSpeakerConfigHelper::configureVolume(volumeLevel);
         }
         else
         {
@@ -168,13 +217,12 @@ class SmartBulb : public Device
 private:
     string colour;
     int brightness;
-    static int totalSmartBulbs; // Static variable for SmartBulb count
+
 public:
     // Constructor 2
     SmartBulb(string deviceName, string typeOfConnectivity, int versionYear)
         : Device(deviceName, typeOfConnectivity, versionYear), brightness(5), colour("white")
     {
-        totalSmartBulbs++; // Increment SmartBulb count
     }
 
     // Accessors
@@ -187,16 +235,13 @@ public:
         return brightness;
     }
     // Destructor 2
-    ~SmartBulb()
-    {
-        totalSmartBulbs--; // Decrement SmartBulb count
-    }
+    ~SmartBulb() {}
 
     // Function overriding the pure virtual function
     void switchOnOff(bool turnOn) override
     {
         isOn = turnOn;
-        cout << deviceName << " is now " << (isOn ? "on" : "off") << endl;
+        DeviceLogger::logDeviceStatus(deviceName, isOn);
     }
 
     // Function overriding the pure virtual function
@@ -216,33 +261,14 @@ public:
     {
         if (isOn)
         {
-            cout << "Set colour: ";
-            cin >> colour;
-            cout << "Set brightness (1-10): ";
-            cin >> brightness;
-            if (1 <= brightness && brightness <= 10)
-            {
-                cout << "Colour set to " << colour << " and brightness set to " << brightness << endl;
-            }
-            else
-            {
-                cout << "Invalid brightness. Setting to default (5)." << endl;
-                brightness = 5;
-            }
+            SmartBulbConfigHelper::configureSettings(colour, brightness);
         }
         else
         {
             cout << "Turn on the device before configuring." << endl;
         }
     }
-
-    static int getTotalSmartBulbs()
-    { // Static member function for SmartBulb count
-        return totalSmartBulbs;
-    }
 };
-
-int SmartBulb::totalSmartBulbs = 0; // Initialize static member
 
 // Derived class Thermostat
 class Thermostat : public Device
@@ -262,7 +288,7 @@ public:
     void switchOnOff(bool turnOn) override
     {
         isOn = turnOn;
-        cout << deviceName << " is now " << (isOn ? "on" : "off") << endl;
+        DeviceLogger::logDeviceStatus(deviceName, isOn);
     }
 
     // Function overriding the pure virtual function
@@ -281,9 +307,7 @@ public:
     {
         if (isOn)
         {
-            cout << "Set temperature (°C): ";
-            cin >> temperature;
-            cout << "Temperature set to " << temperature << "°C" << endl;
+            ThermostatConfigHelper::configureTemperature(temperature);
         }
         else
         {
@@ -354,7 +378,6 @@ int main()
         delete device; // Freeing the allocated memory
     }
     cout << "Total devices created: " << Device::getTotalDevices() << endl;
-    cout << "Total smart bulbs created: " << SmartBulb::getTotalSmartBulbs() << endl;
 
     return 0;
 }
