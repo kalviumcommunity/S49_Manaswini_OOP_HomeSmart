@@ -4,6 +4,80 @@
 #include <iomanip>
 
 using namespace std;
+
+// Configuration Helper Class for SmartWatch
+class SmartWatchConfigHelper
+{
+public:
+    static void configureBattery(int &batteryLife)
+    {
+        cout << "Set battery life (hours): ";
+        cin >> batteryLife;
+        cout << "Battery life set to " << batteryLife << " hours" << endl;
+    }
+};
+
+// Configuration Helper Class for SmartSpeaker
+class SmartSpeakerConfigHelper
+{
+public:
+    static void configureVolume(int &volumeLevel)
+    {
+        cout << "Set volume level (1-10): ";
+        cin >> volumeLevel;
+        if (volumeLevel < 1 || volumeLevel > 10)
+        {
+            cout << "Invalid volume. Setting to default (5)." << endl;
+            volumeLevel = 5;
+        }
+    }
+};
+
+// Configuration Helper Class for SmartBulb
+class SmartBulbConfigHelper
+{
+public:
+    static void configureSettings(string &colour, int &brightness)
+    {
+        cout << "Set colour: ";
+        cin >> colour;
+        cout << "Set brightness (1-10): ";
+        cin >> brightness;
+        if (brightness < 1 || brightness > 10)
+        {
+            cout << "Invalid brightness. Setting to default (5)." << endl;
+            brightness = 5;
+        }
+    }
+};
+
+// Configuration Helper Class for Thermostat
+class ThermostatConfigHelper
+{
+public:
+    static void configureTemperature(float &temperature)
+    {
+        cout << "Set temperature (°C): ";
+        cin >> temperature;
+        cout << "Temperature set to " << temperature << "°C" << endl;
+    }
+};
+
+// Logging Helper Class
+class DeviceLogger
+{
+public:
+    static void logDeviceCreation(const string &deviceName)
+    {
+        cout << "Device created: " << deviceName << endl;
+    }
+
+    static void logDeviceStatus(const string &deviceName, bool deviceStatus)
+    {
+        cout << deviceName << " is now " << (deviceStatus ? "on" : "off") << endl;
+    }
+};
+
 // Abstract class
 class Device
 {
@@ -20,6 +94,7 @@ protected:
     void incrementTotalDevices()
     {
         totalDevices++;
+        DeviceLogger::logDeviceCreation(deviceName);
     }
 
 public:
@@ -103,9 +178,7 @@ public:
     {
         if (deviceStatus)
         {
-            cout << "Set battery life (hours): ";
-            cin >> batteryLife;
-            cout << "Battery life set to " << batteryLife << " hours" << endl;
+            SmartWatchConfigHelper::configureBattery(batteryLife);
         }
         else
         {
@@ -125,7 +198,6 @@ public:
     // Constructor for SmartSpeaker
     SmartSpeaker(string name, string connectivity, int year, int volume)
         : Device(name, connectivity, year), volumeLevel(volume), deviceStatus(false) {}
-
     // Function to show specific details
     bool isDeviceOn() const override
     {
@@ -143,7 +215,6 @@ public:
         deviceStatus = false;
         cout << deviceName << " is now off" << endl;
     }
-
     // Function overriding the pure virtual function
     void showDetails() const override
     {
@@ -160,17 +231,7 @@ public:
     {
         if (deviceStatus)
         {
-            cout << "Set volume level (1-10): ";
-            cin >> volumeLevel;
-            if (1 <= volumeLevel && volumeLevel <= 10)
-            {
-                cout << "Volume level set to " << volumeLevel << endl;
-            }
-            else
-            {
-                cout << "Invalid volume level. Setting to default (5)." << endl;
-                volumeLevel = 5;
-            }
+            SmartSpeakerConfigHelper::configureVolume(volumeLevel);
         }
         else
         {
@@ -185,6 +246,7 @@ class SmartBulb : public Device
 private:
     string colour;
     int brightness;
+
     bool deviceStatus;
 
 public:
@@ -197,8 +259,12 @@ public:
     // Accessors
     bool isDeviceOn() const override
     {
+
         return deviceStatus;
     }
+
+    // Destructor 2
+    ~SmartBulb() {}
 
     void switchOn() override
     {
@@ -229,19 +295,7 @@ public:
     {
         if (deviceStatus)
         {
-            cout << "Set colour: ";
-            cin >> colour;
-            cout << "Set brightness (1-10): ";
-            cin >> brightness;
-            if (1 <= brightness && brightness <= 10)
-            {
-                cout << "Colour set to " << colour << " and brightness set to " << brightness << endl;
-            }
-            else
-            {
-                cout << "Invalid brightness. Setting to default (5)." << endl;
-                brightness = 5;
-            }
+            SmartBulbConfigHelper::configureSettings(colour, brightness);
         }
         else
         {
@@ -299,9 +353,7 @@ public:
     {
         if (deviceStatus)
         {
-            cout << "Set temperature (°C): ";
-            cin >> temperature;
-            cout << "Temperature set to " << temperature << "°C" << endl;
+            ThermostatConfigHelper::configureTemperature(temperature);
         }
         else
         {
