@@ -2,6 +2,8 @@
 #include <cstdio>
 #include <iostream>
 #include <iomanip>
+#include <map>
+#include <functional>
 
 using namespace std;
 
@@ -100,11 +102,8 @@ protected:
 public:
     // constructor -1
     Device(string deviceName, string typeOfConnectivity, int versionYear)
+        : deviceName(deviceName), typeOfConnectivity(typeOfConnectivity), versionYear(versionYear), isOn(false)
     {
-        this->deviceName = deviceName;
-        this->typeOfConnectivity = typeOfConnectivity;
-        this->versionYear = versionYear;
-        this->isOn = false;
         incrementTotalDevices();
     }
 
@@ -120,6 +119,18 @@ public:
     static int getTotalDevices()
     {
         return totalDevices;
+    }
+
+    virtual void configureVolume(int volumeLevel)
+    {
+        if (isOn)
+        {
+            SmartSpeakerConfigHelper::configureVolume(volumeLevel);
+        }
+        else
+        {
+            cout << "Turn on the device before configuring." << endl;
+        }
     }
 };
 
@@ -140,7 +151,7 @@ public:
     void switchOnOff(bool turnOn) override
     {
         isOn = turnOn;
-        cout << deviceName << " is now " << (isOn ? "on" : "off") << endl;
+        DeviceLogger::logDeviceStatus(deviceName, isOn);
     }
 
     // Function overriding the pure virtual function
@@ -225,18 +236,6 @@ public:
     {
     }
 
-    // Accessors
-    string getColour() const
-    {
-        return colour;
-    }
-    int getBrightness() const
-    {
-        return brightness;
-    }
-    // Destructor 2
-    ~SmartBulb() {}
-
     // Function overriding the pure virtual function
     void switchOnOff(bool turnOn) override
     {
@@ -268,6 +267,33 @@ public:
             cout << "Turn on the device before configuring." << endl;
         }
     }
+
+    // SmartBulb specific method
+    void setBrightness(int level)
+    {
+        if (isOn)
+        {
+            brightness = level;
+            cout << "Brightness set to " << brightness << endl;
+        }
+        else
+        {
+            cout << "Turn on the bulb before setting brightness." << endl;
+        }
+    }
+
+    void setColour(string newColour)
+    {
+        if (isOn)
+        {
+            colour = newColour;
+            cout << "Colour set to " << colour << endl;
+        }
+        else
+        {
+            cout << "Turn on the bulb before setting colour." << endl;
+        }
+    }
 };
 
 // Derived class Thermostat
@@ -280,9 +306,6 @@ public:
     // Constructor 3
     Thermostat(string deviceName, string typeOfConnectivity, int versionYear)
         : Device(deviceName, typeOfConnectivity, versionYear), temperature(22.0) {}
-
-    // Destructor 3
-    ~Thermostat() {}
 
     // Function overriding the pure virtual function
     void switchOnOff(bool turnOn) override
@@ -316,68 +339,166 @@ public:
     }
 };
 
+// Factory class for creating devices
+class DeviceFactory
+{
+private:
+    map<int, function<Device *(const string &, const string &, int)>> deviceCreators;
+
+public:
+    DeviceFactory()
+    {
+        // Register existing device types
+        deviceCreators[1] = [](const string &name, const string &connectivity, int year)
+        {
+            return new SmartWatch(name, connectivity, year, 24);
+        };
+        deviceCreators[2] = [](const string &name, const string &connectivity, int year)
+        {
+            return new SmartSpeaker(name, connectivity, year, 5);
+        };
+        deviceCreators[3] = [](const string &name, const string &connectivity, int year)
+        {
+            return new SmartBulb(name, connectivity, year);
+        };
+        deviceCreators[4] = [](const string &name, const string &connectivity, int year)
+        {
+            return new Thermostat(name, connectivity, year);
+        };
+    }
+
+    Device *createDevice(int deviceType, const string &name, const string &connectivity, int year)
+    {
+        if (deviceCreators.find(deviceType) != deviceCreators.end())
+        {
+            return deviceCreators[deviceType](name, connectivity, year);
+        }
+        cout << "Invalid device type." << endl;
+        return nullptr;
+    }
+};
+
 int main()
 {
-    string name_of_device, connectivity;
-    int deviceType, version_year;
-    string confirmation;
+    DeviceFactory factory;
+    map<int, Device *> devices;
+    int choice;
+    int deviceCount = 0;
 
-    cout << "Do you want to connect a device? y(yes) or n(no)" << endl;
-    cin >> confirmation;
-
-    if (confirmation == "y")
+    do
     {
-        cout << "Which device do you want to connect? (SmartWatch(1)/SmartSpeker(2)/SmartBulb->(3)/Thermostat->(4))" << endl;
-        cin >> deviceType;
+        cout << "\n==== Smart Device Hub ====\n";
+        cout << "1. Add Device\n";
+        cout << "2. Switch Device On/Off\n";
+        cout << "3. Configure Device\n";
+        cout << "4. Show Device Details\n";
+        cout << "5. Show Total Devices\n";
+        cout << "6. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
 
-        cout << "Enter the device name" << endl;
-        cin >> name_of_device;
-        cout << "Enter the type of connectivity" << endl;
-        cin >> connectivity;
-        cout << "Enter the version year" << endl;
-        cin >> version_year;
+        switch (choice)
+        {
+        case 1:
+        {
+            cout << "\nSelect Device Type:\n";
+            cout << "1. SmartWatch\n";
+            cout << "2. SmartSpeaker\n";
+            cout << "3. SmartBulb\n";
+            cout << "4. Thermostat\n";
+            cout << "Enter your choice: ";
+            int deviceType;
+            cin >> deviceType;
 
-        // Create a device object based on the user input [Runtime Polymorphism]
-        Device *device = nullptr;
-        if (deviceType == 1)
-        {
-            device = new SmartWatch(name_of_device, connectivity, version_year, 24);
-        }
-        else if (deviceType == 2)
-        {
-            device = new SmartSpeaker(name_of_device, connectivity, version_year, 5);
-        }
-        else if (deviceType == 3)
-        {
-            device = new SmartBulb(name_of_device, connectivity, version_year);
-        }
+            string name, connectivity;
+            int year;
 
-        else if (deviceType == 4)
-        {
-            device = new Thermostat(name_of_device, connectivity, version_year);
-        }
-        else
-        {
-            cout << "Invalid device type." << endl;
-            return 1;
-        }
-        cout << "Do you want to turn on the device? y(yes) or n(no)" << endl;
-        cin >> confirmation;
-        if (confirmation == "y")
-        {
-            device->switchOnOff(true);
-            device->configure();
-        }
-        else
-        {
-            cout << "Device remains off." << endl;
-        }
+            cout << "Enter device name: ";
+            cin >> name;
+            cout << "Enter connectivity type (e.g., WiFi, Bluetooth): ";
+            cin >> connectivity;
+            cout << "Enter version year: ";
+            cin >> year;
 
-        device->showDetails();
+            Device *device = factory.createDevice(deviceType, name, connectivity, year);
+            if (device)
+            {
+                devices[++deviceCount] = device;
+                cout << "Device added with ID: " << deviceCount << endl;
+            }
+            break;
+        }
+        case 2:
+        {
+            cout << "Enter device ID to switch on/off: ";
+            int deviceID;
+            cin >> deviceID;
 
-        delete device; // Freeing the allocated memory
+            if (devices.find(deviceID) != devices.end())
+            {
+                cout << "Enter 1 to switch on, 0 to switch off: ";
+                bool turnOn;
+                cin >> turnOn;
+                devices[deviceID]->switchOnOff(turnOn);
+            }
+            else
+            {
+                cout << "Invalid device ID.\n";
+            }
+            break;
+        }
+        case 3:
+        {
+            cout << "Enter device ID to configure: ";
+            int deviceID;
+            cin >> deviceID;
+
+            if (devices.find(deviceID) != devices.end())
+            {
+                devices[deviceID]->configure();
+            }
+            else
+            {
+                cout << "Invalid device ID.\n";
+            }
+            break;
+        }
+        case 4:
+        {
+            cout << "Enter device ID to show details: ";
+            int deviceID;
+            cin >> deviceID;
+
+            if (devices.find(deviceID) != devices.end())
+            {
+                devices[deviceID]->showDetails();
+            }
+            else
+            {
+                cout << "Invalid device ID.\n";
+            }
+            break;
+        }
+        case 5:
+        {
+            cout << "Total devices created: " << Device::getTotalDevices() << endl;
+            break;
+        }
+        case 6:
+        {
+            cout << "Exiting...\n";
+            break;
+        }
+        default:
+            cout << "Invalid choice. Please try again.\n";
+        }
+    } while (choice != 6);
+
+    // Cleanup: Delete all dynamically allocated devices
+    for (auto &pair : devices)
+    {
+        delete pair.second;
     }
-    cout << "Total devices created: " << Device::getTotalDevices() << endl;
 
     return 0;
 }
