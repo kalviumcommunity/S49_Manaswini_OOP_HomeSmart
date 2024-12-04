@@ -6,7 +6,8 @@
 #include <functional>
 
 using namespace std;
-
+// Using SRP by creating separate classes for configuration and logging
+// Using LSP by creating a factory class to create devices
 // Configuration Helper Class for SmartWatch
 class SmartWatchConfigHelper
 {
@@ -339,7 +340,7 @@ public:
     }
 };
 
-// Factory class for creating devices
+// Factory class for creating devices and using lsp
 class DeviceFactory
 {
 private:
